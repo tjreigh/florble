@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f5f3">
+    <meta name="description" content="Florble: a deterministic glyph-substitution word puzzle.">
+    <title>Florble</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main id="app" class="app-shell">
+      <header class="site-header">
+        <div>
+          <p class="eyebrow">Deterministic lexical assessment</p>
+          <h1>FLORBLE</h1>
+        </div>
+        <div class="header-actions">
+          <div id="development-controls" class="development-controls" hidden>
+            <label for="target-select">Target</label>
+            <select id="target-select" aria-label="Development target"></select>
+            <button id="reset-target-button" class="button button--quiet" type="button">
+              Restart target
+            </button>
+          </div>
+          <button id="rules-button" class="button button--quiet" type="button" aria-haspopup="dialog">
+            Rules
+          </button>
+        </div>
+      </header>
+
+      <section class="instrument-panel" aria-labelledby="puzzle-heading">
+        <h2 id="puzzle-heading" class="visually-hidden">Today’s Florble puzzle</h2>
+
+        <div class="readout" aria-label="Puzzle status">
+          <p id="mode-indicator" class="mode-indicator">Positional analysis</p>
+          <p id="guess-counter" class="guess-counter">Guess 1 of 6</p>
+        </div>
+
+        <div id="status" class="status" role="status" aria-live="polite" aria-atomic="true">
+          Select five letter-shaped glyphs to begin.
+        </div>
+
+        <div id="board" class="board" role="grid" aria-label="Submitted guesses"></div>
+
+        <section class="input-station" aria-labelledby="input-heading">
+          <div class="input-heading-row">
+            <h2 id="input-heading">Current specimen</h2>
+            <span class="slot-count">5 glyphs required</span>
+          </div>
+
+          <div
+            id="current-guess"
+            class="current-guess"
+            role="group"
+            aria-label="Current guess, empty"
+          ></div>
+
+          <p id="palette-help" class="field-help">
+            Build a word from the fixed symbol alphabet. Dot markers distinguish symbols that otherwise look identical;
+            they do not reveal the underlying Latin letters.
+          </p>
+          <div
+            id="palette"
+            class="palette"
+            role="group"
+            aria-label="Glyph picker with neutral dot markers for visually identical entries"
+            aria-describedby="palette-help"
+          ></div>
+
+          <div class="input-actions">
+            <button id="delete-button" class="button button--secondary" type="button" disabled>
+              Delete
+            </button>
+            <button id="submit-button" class="button button--primary" type="button" disabled>
+              Submit guess
+            </button>
+          </div>
+        </section>
+
+        <section id="answer-reveal" class="answer-reveal" aria-live="polite" hidden></section>
+      </section>
+
+      <footer class="site-footer">
+        <span>Same input. Same result.</span>
+        <span>No alphabet changes in service.</span>
+      </footer>
+    </main>
+
+    <dialog id="rules-dialog" class="rules-dialog" aria-labelledby="rules-title">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow">Operating protocol</p>
+          <h2 id="rules-title">How to Florble</h2>
+        </div>
+        <button id="close-rules" class="icon-button" type="button" aria-label="Close rules">×</button>
+      </div>
+
+      <div class="rules-content">
+        <p>
+          Identify the hidden five-letter canonical word by assembling guesses from a fixed glyph palette. Each entry
+          represents one Latin letter, but the letter itself is not shown during play.
+        </p>
+
+        <ol>
+          <li>Each palette entry always represents the same hidden canonical letter throughout the round.</li>
+          <li>Some different letters deliberately share the exact same large glyph.</li>
+          <li>One-dot and two-dot markers give those otherwise identical entries stable, neutral identities.</li>
+          <li>Every palette entry is reusable, so repeated letters and wrong combinations remain possible.</li>
+          <li>Feedback evaluates the hidden canonical letters selected, never merely their visual appearance.</li>
+          <li>Submitted rows and their neutral markers remain permanently frozen.</li>
+        </ol>
+
+        <h3>Feedback phases</h3>
+        <p>
+          Guesses 1–4 use positional feedback. After an unsuccessful fourth guess, the limit increases from 6 to 12
+          and feedback becomes positionless: it reports which selected glyph identities occur in the answer, but not where.
+        </p>
+
+        <ul class="feedback-key" aria-label="Feedback legend">
+          <li><span class="key-swatch key-swatch--exact" aria-hidden="true">✓</span><span><strong>Exact</strong> — correct glyph identity and position.</span></li>
+          <li><span class="key-swatch key-swatch--present" aria-hidden="true">◇</span><span><strong>Present</strong> — correct glyph identity, position undisclosed or different.</span></li>
+          <li><span class="key-swatch key-swatch--absent" aria-hidden="true">×</span><span><strong>Absent</strong> — glyph identity not counted in the answer.</span></li>
+        </ul>
+
+        <p class="rules-note">
+          Identical-looking glyphs can encode different letters. Their dot markers are stable, and feedback never lies
+          about which marked entry you selected.
+        </p>
+
+        <h3>Accepted words</h3>
+        <p>
+          The accepted dictionary and possible canonical targets are:
+          <span id="target-dictionary"></span>.
+          A rejected sequence never consumes a guess.
+        </p>
+      </div>
+    </dialog>
+
+    <script type="module" src="app.mjs"></script>
+  </body>
+</html>
