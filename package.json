@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "deploy": "npm run build && wrangler pages deploy dist --project-name=florble --branch=main --commit-dirty=true",
     "preview": "npm run build && wrangler pages dev dist",
     "start": "python3 -m http.server 8000",
     "test": "node --test"
