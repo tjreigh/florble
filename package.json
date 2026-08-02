@@ -3,13 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "packageManager": "yarn@1.22.22",
   "scripts": {
-    "build": "node scripts/build.mjs",
-    "preview": "npm run build && wrangler pages dev dist",
-    "start": "python3 -m http.server 8000",
-    "test": "node --test"
+    "dev": "vite",
+    "start": "vite --host 0.0.0.0",
+    "build": "yarn content:check && yarn typecheck && yarn test && vite build",
+    "content:generate": "node scripts/generate-daily-dictionary.mjs",
+    "content:check": "node scripts/generate-daily-dictionary.mjs --check",
+    "preview": "vite preview --host 0.0.0.0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
+    "jsdom": "^29.1.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.4",
+    "vitest": "^4.1.10",
+    "word-list": "^4.1.0",
     "wrangler": "^4.108.0"
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
   }
 }

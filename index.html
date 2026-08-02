@@ -4,49 +4,62 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f4f5f3">
-    <meta name="description" content="Florble: a deterministic glyph-substitution word puzzle.">
+    <meta name="description" content="Florble: word puzzles made from strange little symbols.">
     <title>Florble</title>
-    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main id="app" class="app-shell">
       <header class="site-header">
         <div>
-          <p class="eyebrow">Deterministic lexical assessment</p>
+          <p class="eyebrow">Word puzzles with a twist</p>
           <h1>FLORBLE</h1>
         </div>
         <div class="header-actions">
-          <div id="development-controls" class="development-controls" hidden>
-            <label for="target-select">Target</label>
-            <select id="target-select" aria-label="Development target"></select>
-            <button id="reset-target-button" class="button button--quiet" type="button">
-              Restart target
+          <nav class="experience-nav" aria-label="Florble experiences">
+            <a href="#/cipher/file-001" data-route-link="cipher">Cipher</a>
+            <a href="#/daily" data-route-link="daily">Daily</a>
+          </nav>
+          <div id="daily-header-actions" class="daily-header-actions">
+            <div id="development-controls" class="development-controls" hidden>
+              <label for="target-select">Target</label>
+              <select id="target-select" aria-label="Development target"></select>
+              <button id="reset-target-button" class="button button--quiet" type="button">
+                Restart target
+              </button>
+            </div>
+            <button id="rules-button" class="button button--quiet" type="button" aria-haspopup="dialog">
+              Rules
             </button>
           </div>
-          <button id="rules-button" class="button button--quiet" type="button" aria-haspopup="dialog">
-            Rules
-          </button>
         </div>
       </header>
 
-      <section class="instrument-panel" aria-labelledby="puzzle-heading">
+      <section id="daily-view" class="experience-view daily-view" aria-labelledby="puzzle-heading" hidden>
+        <section class="instrument-panel">
         <h2 id="puzzle-heading" class="visually-hidden">Today’s Florble puzzle</h2>
 
         <div class="readout" aria-label="Puzzle status">
-          <p id="mode-indicator" class="mode-indicator">Positional analysis</p>
+          <p id="mode-indicator" class="mode-indicator">Word clues</p>
           <p id="guess-counter" class="guess-counter">Guess 1 of 6</p>
         </div>
 
         <div id="status" class="status" role="status" aria-live="polite" aria-atomic="true">
-          Select five letter-shaped glyphs to begin.
+          Build a five-letter word to begin.
         </div>
 
         <div id="board" class="board" role="grid" aria-label="Submitted guesses"></div>
 
+        <section
+          id="overtime-assistance"
+          class="overtime-assistance"
+          aria-live="polite"
+          hidden
+        ></section>
+
         <section class="input-station" aria-labelledby="input-heading">
           <div class="input-heading-row">
-            <h2 id="input-heading">Current specimen</h2>
-            <span class="slot-count">5 glyphs required</span>
+            <h2 id="input-heading">Your word</h2>
+            <span class="slot-count">5 letters</span>
           </div>
 
           <div
@@ -57,14 +70,13 @@
           ></div>
 
           <p id="palette-help" class="field-help">
-            Build a word from the fixed symbol alphabet. Dot markers distinguish symbols that otherwise look identical;
-            they do not reveal the underlying Latin letters.
+            Each symbol sits where its letter would be on a QWERTY keyboard. You can click the symbols or type normally.
           </p>
           <div
             id="palette"
             class="palette"
             role="group"
-            aria-label="Glyph picker with neutral dot markers for visually identical entries"
+            aria-label="QWERTY symbol keyboard"
             aria-describedby="palette-help"
           ></div>
 
@@ -79,64 +91,165 @@
         </section>
 
         <section id="answer-reveal" class="answer-reveal" aria-live="polite" hidden></section>
+        </section>
+      </section>
+
+      <section
+        id="cipher-view"
+        class="experience-view cipher-view"
+        aria-labelledby="cipher-title"
+        tabindex="-1"
+        hidden
+      >
+        <section id="cipher-panel" class="instrument-panel cipher-panel" data-phase="active">
+          <div class="cipher-file-heading">
+            <div>
+              <p class="eyebrow">Cipher files</p>
+              <h2 id="cipher-title">Word Ladder</h2>
+            </div>
+            <div class="cipher-file-actions">
+              <label class="visually-hidden" for="cipher-file-select">Choose a Cipher puzzle</label>
+              <select id="cipher-file-select" class="cipher-file-select" aria-label="Choose a Cipher puzzle">
+                <option value="file-001">Puzzle 001 · Easy</option>
+              </select>
+              <button id="reset-cipher-file" class="button button--quiet" type="button">Restart puzzle</button>
+            </div>
+          </div>
+
+          <div class="readout" aria-label="Cipher puzzle status">
+            <p class="mode-indicator">Decode the symbols</p>
+            <p id="cipher-progress" class="guess-counter">0 of 10 letters locked</p>
+          </div>
+
+          <div id="cipher-status" class="status" role="status" aria-live="polite" aria-atomic="true">
+            Pick a symbol from any row, then choose the letter you think it represents.
+          </div>
+
+          <div class="cipher-brief">
+            <p id="cipher-brief">
+              Each symbol always means the same letter. This is a word ladder: every row is a real five-letter
+              word, and each new row changes exactly one letter. Use eight words from the word bank; four are decoys.
+            </p>
+          </div>
+
+          <div class="cipher-layout">
+            <section class="specimen-section" aria-labelledby="specimen-heading">
+              <div class="input-heading-row">
+                <h3 id="specimen-heading">Symbol rows</h3>
+                <span class="slot-count">Pick any symbol</span>
+              </div>
+              <div id="cipher-specimens" class="cipher-specimens"></div>
+            </section>
+
+            <aside class="cipher-workbench" aria-labelledby="assignment-heading">
+              <h3 id="assignment-heading">Choose a letter</h3>
+              <div id="selected-glyph" class="selected-glyph" aria-live="polite">
+                No symbol selected
+              </div>
+              <div
+                id="cipher-letter-picker"
+                class="cipher-letter-picker"
+                role="group"
+                aria-label="Choose a letter for the selected symbol"
+              ></div>
+              <div class="cipher-assignment-actions">
+                <button id="clear-assignment" class="button button--secondary" type="button" disabled>
+                  Clear
+                </button>
+                <button id="confirm-assignment" class="button button--primary" type="button" disabled>
+                  Lock it in
+                </button>
+              </div>
+              <p class="field-help">
+                A letter starts as a guess. Lock it in when you feel sure. Every matching symbol updates at once.
+              </p>
+            </aside>
+          </div>
+
+          <section id="cipher-contradictions" class="cipher-contradictions" aria-live="polite" hidden></section>
+
+          <section class="cipher-reference" aria-labelledby="candidate-heading">
+            <div class="input-heading-row">
+              <h3 id="candidate-heading">Word bank</h3>
+              <span id="cipher-candidate-summary" class="slot-count">8 answers · 4 decoys</span>
+            </div>
+            <div id="cipher-candidates" class="cipher-candidates"></div>
+          </section>
+
+          <section class="cipher-ledger" aria-labelledby="ledger-heading">
+            <div class="input-heading-row">
+              <h3 id="ledger-heading">Symbol key</h3>
+              <span id="cipher-viability" class="slot-count">Everything fits</span>
+            </div>
+            <div id="cipher-assignments" class="cipher-assignments"></div>
+          </section>
+
+          <section class="cipher-hints" aria-labelledby="hint-heading">
+            <div class="input-heading-row">
+              <h3 id="hint-heading">Need a hint?</h3>
+              <button id="reveal-cipher-hint" class="button button--quiet" type="button">
+                Show hint
+              </button>
+            </div>
+            <ol id="cipher-hint-list" class="cipher-hint-list"></ol>
+          </section>
+
+          <section id="cipher-completion" class="answer-reveal cipher-completion" aria-live="polite" hidden></section>
+        </section>
       </section>
 
       <footer class="site-footer">
-        <span>Same input. Same result.</span>
-        <span>No alphabet changes in service.</span>
+        <span>Take your time.</span>
+        <span>The puzzle will wait.</span>
       </footer>
     </main>
 
     <dialog id="rules-dialog" class="rules-dialog" aria-labelledby="rules-title">
       <div class="dialog-header">
         <div>
-          <p class="eyebrow">Operating protocol</p>
-          <h2 id="rules-title">How to Florble</h2>
+          <p class="eyebrow">Daily puzzle</p>
+          <h2 id="rules-title">How Daily works</h2>
         </div>
         <button id="close-rules" class="icon-button" type="button" aria-label="Close rules">×</button>
       </div>
 
       <div class="rules-content">
         <p>
-          Identify the hidden five-letter canonical word by assembling guesses from a fixed glyph palette. Each entry
-          represents one Latin letter, but the letter itself is not shown during play.
+          Find the hidden five-letter word. The symbols are arranged like a QWERTY keyboard, so each one stands for
+          the letter in that familiar position.
         </p>
 
         <ol>
-          <li>Each palette entry always represents the same hidden canonical letter throughout the round.</li>
-          <li>Some different letters deliberately share the exact same large glyph.</li>
-          <li>One-dot and two-dot markers give those otherwise identical entries stable, neutral identities.</li>
-          <li>Every palette entry is reusable, so repeated letters and wrong combinations remain possible.</li>
-          <li>Feedback evaluates the hidden canonical letters selected, never merely their visual appearance.</li>
-          <li>Submitted rows and their neutral markers remain permanently frozen.</li>
+          <li>Each symbol always stands for the same letter.</li>
+          <li>Every letter has its own distinct symbol.</li>
+          <li>You can click the symbol keyboard or type on your physical keyboard.</li>
+          <li>Symbols can be reused, so words with repeated letters work normally.</li>
+          <li>After each guess, the tiles show which letters belong in the answer.</li>
         </ol>
 
-        <h3>Feedback phases</h3>
+        <h3>Feedback and overtime</h3>
         <p>
-          Guesses 1–4 use positional feedback. After an unsuccessful fourth guess, the limit increases from 6 to 12
-          and feedback becomes positionless: it reports which selected glyph identities occur in the answer, but not where.
+          You get six guesses for the official score. If you do not solve it, overtime keeps giving you another guess.
+          After a while, it also reveals letters to help you finish.
         </p>
 
         <ul class="feedback-key" aria-label="Feedback legend">
-          <li><span class="key-swatch key-swatch--exact" aria-hidden="true">✓</span><span><strong>Exact</strong> — correct glyph identity and position.</span></li>
-          <li><span class="key-swatch key-swatch--present" aria-hidden="true">◇</span><span><strong>Present</strong> — correct glyph identity, position undisclosed or different.</span></li>
-          <li><span class="key-swatch key-swatch--absent" aria-hidden="true">×</span><span><strong>Absent</strong> — glyph identity not counted in the answer.</span></li>
+          <li><span class="key-swatch key-swatch--exact" aria-hidden="true">✓</span><span><strong>Right spot</strong> — the letter is exactly where it belongs.</span></li>
+          <li><span class="key-swatch key-swatch--present" aria-hidden="true">◇</span><span><strong>Wrong spot</strong> — the letter is in the answer, but elsewhere.</span></li>
+          <li><span class="key-swatch key-swatch--absent" aria-hidden="true">×</span><span><strong>Not used</strong> — the answer does not contain that letter.</span></li>
         </ul>
 
         <p class="rules-note">
-          Identical-looking glyphs can encode different letters. Their dot markers are stable, and feedback never lies
-          about which marked entry you selected.
+          Clues never change or hide what you entered.
         </p>
 
         <h3>Accepted words</h3>
         <p>
-          The accepted dictionary and possible canonical targets are:
-          <span id="target-dictionary"></span>.
-          A rejected sequence never consumes a guess.
+          Florble accepts a broad dictionary. If a word is not accepted, it does not use up a guess.
         </p>
       </div>
     </dialog>
 
-    <script type="module" src="app.mjs"></script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
